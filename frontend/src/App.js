@@ -5,10 +5,11 @@ import AnalyzePage from './pages/AnalyzePage/AnalyzePage';
 import FeaturesPage from './pages/FeaturesPage/FeaturesPage';
 import AboutPage from './pages/AboutPage/AboutPage';
 import AuthPage from './pages/AuthenticationPage/AuthPage';
-
-
+import { ThemeProvider } from '@mui/material/styles';
+import theme from './theme';
 function App() {
   return (
+    <ThemeProvider theme={theme}>
     <BrowserRouter>
       <Navbar />
       <Routes>
@@ -18,7 +19,8 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/auth" element={<AuthPage />} />
       </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

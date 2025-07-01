@@ -40,14 +40,7 @@ const AboutPage = () => {
                 }}
               />
             </Box>
-            <Typography
-              variant="h4"
-              sx={{
-                color: "text.secondary",
-                fontWeight: 300,
-                fontSize: { xs: "1.3rem", md: "1.8rem" },
-              }}
-            >
+            <Typography variant="h4" sx={{ color: "text.secondary" }}>
               AI-Powered Pet Recognition Technology
             </Typography>
           </Box>
@@ -76,7 +69,7 @@ const AboutPage = () => {
                     maxWidth: 500,
                     transition: "all 0.4s ease",
                     border: "3px solid",
-                    borderColor: "#3d9970",
+                    borderColor: "primary.main",
                     "&:hover": {
                       transform: "translateY(-8px)",
                       boxShadow: "0 20px 60px rgba(61, 153, 112, 0.2)",
@@ -111,12 +104,11 @@ const AboutPage = () => {
                   sx={{
                     p: 5,
                     borderRadius: 6,
-                    bgcolor: "white",
-                    border: "3px solid",
-                    borderColor: "#3d9970",
                     width: "100%",
                     maxWidth: 500,
                     height: "fit-content",
+                    border: "3px solid",
+                    borderColor: "primary.main",
                     transition: "all 0.4s ease",
                     "&:hover": {
                       transform: "translateY(-8px)",
@@ -124,60 +116,32 @@ const AboutPage = () => {
                     },
                   }}
                 >
-                  <Typography
-                    variant="h3"
-                    sx={{
-                      mb: 4,
-                      color: "#3d9970",
-                      fontWeight: 600,
-                      textAlign: "center",
-                      fontSize: { xs: "1.8rem", md: "2.2rem" },
-                    }}
-                  >
+                  <Typography variant="h2" sx={{ mb: 4, textAlign: "center" }}>
                     About PetDetect
                   </Typography>
 
                   <Box sx={{ space: 3 }}>
                     <Typography
                       variant="body1"
-                      sx={{
-                        fontSize: "1.1rem",
-                        lineHeight: 1.8,
-                        color: "text.primary",
-                        textAlign: "justify",
-                        mb: 3,
-                      }}
+                      sx={{ textAlign: "justify", mb: 3 }}
                     >
                       PetDetect is an AI-powered web application designed to
-                      identify pets like cats and dogs in user uploaded
-                      images. If pets are detected, the system displays object
-                      detection (bounding boxes) and segmentation (highlighted
-                      areas) visualizations.
+                      identify pets like cats and dogs in user uploaded images.
+                      If pets are detected, the system displays object detection
+                      (bounding boxes) and segmentation (highlighted areas)
+                      visualizations.
                     </Typography>
 
                     <Typography
                       variant="body1"
-                      sx={{
-                        fontSize: "1.1rem",
-                        lineHeight: 1.8,
-                        color: "text.primary",
-                        textAlign: "justify",
-                        mb: 3,
-                      }}
+                      sx={{ textAlign: "justify", mb: 3 }}
                     >
                       Access to the AI features is limited to registered users.
-
                     </Typography>
 
                     <Typography
                       variant="body1"
-                      sx={{
-                        fontSize: "1.1rem",
-                        lineHeight: 1.8,
-                        color: "text.primary",
-                        textAlign: "justify",
-                        fontWeight: 500,
-                      }}
+                      sx={{ textAlign: "justify", fontWeight: 500 }}
                     >
                       PetDetect offers a simple and secure way to explore pet
                       detection using modern AI technology.
@@ -186,8 +150,8 @@ const AboutPage = () => {
                 </Paper>
               </Box>
             </Grid>
-          </Grid>
-
+                  </Grid>
+                  
         </Box>
       </Container>
     </Box>

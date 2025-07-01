@@ -2,8 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { AppBar, Toolbar, Button, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import logo from "../assets/logo.png";
-// usin mui styled API for inline styling instead of a separate CSS file 
-// to prevent styles from being overridden by mui's default 
+
 const StyledAppBar = styled(AppBar)({
   backgroundColor: "#3d9970",
   boxShadow: "none",
@@ -17,15 +16,24 @@ const StyledToolbar = styled(Toolbar)({
 
 const NavButton = styled(Button)(({ theme, active }) => ({
   fontWeight: active ? "bold" : "medium",
-  fontSize: 20,
+  fontSize: "1.25rem",
   backgroundColor: active ? "rgba(255,255,255,0.15)" : "transparent",
   "&:hover": {
     backgroundColor: "rgba(255,255,255,0.1)",
     transform: "translateY(-2px)",
   },
   transition: "all 0.3s ease",
-  borderRadius: "4px", 
+  borderRadius: "4px",
+  margin: "0 8px",
+  padding: "8px 16px",
 }));
+
+const LogoContainer = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  textDecoration: "none",
+  flexGrow: 1,
+});
 
 export default function Navbar() {
   const location = useLocation();
@@ -33,21 +41,7 @@ export default function Navbar() {
   return (
     <StyledAppBar position="static">
       <StyledToolbar>
-        {/* logo */}
-        <Box
-          component={Link}
-          to="/"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            flexGrow: 1,
-            "&:hover": {
-              transform: "scale(1.02)",
-              transition: "transform 0.3s ease",
-            },
-          }}
-        >
+        <LogoContainer component={Link} to="/">
           <img
             src={logo}
             alt="PetDetector Logo"
@@ -57,10 +51,9 @@ export default function Navbar() {
               objectFit: "contain",
             }}
           />
-        </Box>
+        </LogoContainer>
 
-        {/* nav links */}
-        <Box sx={{ display: "flex", gap: "16px" }}>
+        <Box sx={{ display: "flex" }}>
           <NavButton
             color="inherit"
             component={Link}
