@@ -1,7 +1,9 @@
 import { Container, Typography, Box, Paper,Grid } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import logo from "../../assets/logo2.png";
 import catImage from "../../assets/cat2.png";
 const AboutPage = () => {
+  const theme = useTheme();
   return (
     <Box
       sx={{
@@ -35,12 +37,12 @@ const AboutPage = () => {
                 alt="PetDetector Logo"
                 style={{
                   height: "80px",
-                  marginRight: "15px",
+                  marginRight: theme.spacing(2),
                   objectFit: "contain",
                 }}
               />
             </Box>
-            <Typography variant="h4" sx={{ color: "text.secondary" }}>
+            <Typography variant="h4" color="text.secondary">
               AI-Powered Pet Recognition Technology
             </Typography>
           </Box>
@@ -48,7 +50,14 @@ const AboutPage = () => {
           <Grid
             container
             spacing={4}
-            sx={{ maxWidth: 1400, alignItems: "stretch" }}
+            sx={{
+              maxWidth: 1400,
+              alignItems: "stretch",
+              [theme.breakpoints.down("md")]: {
+                flexDirection: "column",
+                alignItems: "center",
+              },
+            }}
           >
             {/* cat image on left side */}
             <Grid item xs={12} md={6}>
@@ -63,16 +72,21 @@ const AboutPage = () => {
                 <Paper
                   elevation={12}
                   sx={{
-                    borderRadius: 6,
+                    borderRadius: theme.shape.borderRadius * 3,
                     overflow: "hidden",
                     width: "100%",
                     maxWidth: 500,
-                    transition: "all 0.4s ease",
+                    transition: theme.transitions.create(
+                      ["transform", "box-shadow"],
+                      {
+                        duration: theme.transitions.duration.standard,
+                      }
+                    ),
                     border: "3px solid",
                     borderColor: "primary.main",
                     "&:hover": {
                       transform: "translateY(-8px)",
-                      boxShadow: "0 20px 60px rgba(61, 153, 112, 0.2)",
+                      boxShadow: theme.shadows[10],
                     },
                   }}
                 >
@@ -81,8 +95,9 @@ const AboutPage = () => {
                     alt="Cute cat for pet detection"
                     style={{
                       width: "100%",
-                      height: "460px",
+                      height: "400px",
                       display: "block",
+                      objectFit: "cover",
                     }}
                   />
                 </Paper>
@@ -103,28 +118,40 @@ const AboutPage = () => {
                   elevation={8}
                   sx={{
                     p: 5,
-                    borderRadius: 6,
+                    borderRadius: theme.shape.borderRadius * 3,
                     width: "100%",
                     maxWidth: 500,
                     height: "fit-content",
                     border: "3px solid",
                     borderColor: "primary.main",
-                    transition: "all 0.4s ease",
+                    transition: theme.transitions.create(
+                      ["transform", "box-shadow"],
+                      {
+                        duration: theme.transitions.duration.standard,
+                      }
+                    ),
                     "&:hover": {
                       transform: "translateY(-8px)",
-                      boxShadow: "0 20px 60px rgba(61, 153, 112, 0.15)",
+                      boxShadow: theme.shadows[8],
                     },
                   }}
                 >
-                  <Typography variant="h2" sx={{ mb: 4, textAlign: "center" }}>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      mb: 4,
+                      textAlign: "center",
+                      color: "primary.main",
+                      [theme.breakpoints.down("sm")]: {
+                        fontSize: "1.8rem",
+                      },
+                    }}
+                  >
                     About PetDetect
                   </Typography>
 
-                  <Box sx={{ space: 3 }}>
-                    <Typography
-                      variant="body1"
-                      sx={{ textAlign: "justify", mb: 3 }}
-                    >
+                  <Box sx={{ "& > *": { mb: 3 } }}>
+                    <Typography variant="body1" align="justify">
                       PetDetect is an AI-powered web application designed to
                       identify pets like cats and dogs in user uploaded images.
                       If pets are detected, the system displays object detection
@@ -132,16 +159,14 @@ const AboutPage = () => {
                       visualizations.
                     </Typography>
 
-                    <Typography
-                      variant="body1"
-                      sx={{ textAlign: "justify", mb: 3 }}
-                    >
+                    <Typography variant="body1" align="justify">
                       Access to the AI features is limited to registered users.
                     </Typography>
 
                     <Typography
                       variant="body1"
-                      sx={{ textAlign: "justify", fontWeight: 500 }}
+                      align="justify"
+                      fontWeight="fontWeightMedium"
                     >
                       PetDetect offers a simple and secure way to explore pet
                       detection using modern AI technology.
@@ -150,8 +175,8 @@ const AboutPage = () => {
                 </Paper>
               </Box>
             </Grid>
-                  </Grid>
-                  
+          </Grid>
+          
         </Box>
       </Container>
     </Box>

@@ -7,6 +7,7 @@ import {
   CardContent,
   Box,
   useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import Classification from "../../assets/classification.png";
 import Detection from "../../assets/detection.png";
@@ -34,7 +35,8 @@ const features = [
 ];
 
 const FeaturesPage = () => {
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <Box
@@ -48,12 +50,29 @@ const FeaturesPage = () => {
       <Container maxWidth="lg" sx={{ px: isMobile ? 2 : 4 }}>
         {/* header */}
         <Box sx={{ textAlign: "center", mb: 8 }}>
-          <Typography variant="h1" sx={{ mb: 2 }}>
+          <Typography
+            variant="h1"
+            sx={{
+              mb: 2,
+              color: "primary.main",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "2.5rem",
+              },
+            }}
+          >
             Powerful Features
           </Typography>
           <Typography
             variant="h5"
-            sx={{ maxWidth: 600, mx: "auto", lineHeight: 1.6 }}
+            sx={{
+              maxWidth: 600,
+              mx: "auto",
+              lineHeight: 1.6,
+              color: "text.secondary",
+              [theme.breakpoints.down("sm")]: {
+                fontSize: "1.25rem",
+              },
+            }}
           >
             Discover the Innovative Features of PetDetect: AI-Powered Pet
             Detection Made Simple and Secure
@@ -63,7 +82,13 @@ const FeaturesPage = () => {
         <Grid
           container
           spacing={4}
-          sx={{ alignItems: "stretch", justifyContent: "center" }}
+          sx={{
+            alignItems: "stretch",
+            justifyContent: "center",
+            [theme.breakpoints.down("sm")]: {
+              spacing: 3,
+            },
+          }}
         >
           {features.map((feature) => (
             <Grid
@@ -75,21 +100,26 @@ const FeaturesPage = () => {
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                maxWidth: { xs: "100%", sm: "500px", md: "350px" },
               }}
             >
               <Card
                 sx={{
                   width: "100%",
+                  maxWidth: 350,
                   display: "flex",
                   flexDirection: "column",
-                  borderRadius: 3,
+                  borderRadius: theme.shape.borderRadius * 2,
                   overflow: "hidden",
-                  transition: "all 0.3s ease",
-                  boxShadow: "0 4px 20px rgba(61, 153, 112, 0.1)",
+                  transition: theme.transitions.create(
+                    ["transform", "box-shadow"],
+                    {
+                      duration: theme.transitions.duration.standard,
+                    }
+                  ),
+                  boxShadow: theme.shadows[4],
                   "&:hover": {
                     transform: "translateY(-8px)",
-                    boxShadow: "0 12px 40px rgba(61, 153, 112, 0.2)",
+                    boxShadow: theme.shadows[10],
                   },
                 }}
               >
@@ -102,17 +132,40 @@ const FeaturesPage = () => {
                   sx={{
                     width: "100%",
                     objectFit: "cover",
-                    transition: "transform 0.3s ease",
+                    transition: theme.transitions.create("transform", {
+                      duration: theme.transitions.duration.standard,
+                    }),
                     "&:hover": {
                       transform: "scale(1.05)",
                     },
                   }}
                 />
-                <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                  <Typography variant="h5" component="h3" sx={{ mb: 2 }}>
+                <CardContent
+                  sx={{
+                    flexGrow: 1,
+                    p: 3,
+                    [theme.breakpoints.down("sm")]: {
+                      p: 2,
+                    },
+                  }}
+                >
+                  <Typography
+                    variant="h5"
+                    component="h3"
+                    sx={{
+                      mb: 2,
+                      color: "primary.main",
+                    }}
+                  >
                     {feature.title}
                   </Typography>
-                  <Typography variant="body1" sx={{ lineHeight: 1.7 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      lineHeight: 1.7,
+                      color: "text.secondary",
+                    }}
+                  >
                     {feature.description}
                   </Typography>
                 </CardContent>

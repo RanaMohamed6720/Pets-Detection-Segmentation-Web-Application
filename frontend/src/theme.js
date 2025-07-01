@@ -16,62 +16,91 @@ const theme = createTheme({
     },
     typography: {
         fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+        fontSize: 18, 
         h1: {
-            fontSize: '3.5rem',
+            fontSize: '2.5rem',
             fontWeight: 700,
+            lineHeight: 1.2,
             color: '#3d9970',
-            '@media (max-width:900px)': {
-                fontSize: '2.5rem',
-            },
         },
         h2: {
-            fontSize: '2.2rem',
+            fontSize: '2rem',
             fontWeight: 600,
+            lineHeight: 1.3,
             color: '#3d9970',
-            '@media (max-width:900px)': {
-                fontSize: '1.8rem',
-            },
         },
         h3: {
-            fontSize: '1.8rem',
+            fontSize: '1.75rem',
             fontWeight: 600,
+            lineHeight: 1.3,
             color: '#3d9970',
         },
         h4: {
-            fontSize: '1.8rem',
-            fontWeight: 300,
-            '@media (max-width:900px)': {
-                fontSize: '1.3rem',
-            },
+            fontSize: '1.5rem',
+            fontWeight: 500,
+            lineHeight: 1.4,
         },
         h5: {
-            fontSize: '1.5rem',
-            fontWeight: 600,
-            '@media (max-width:900px)': {
-                fontSize: '1.3rem',
-            },
+            fontSize: '1.375rem', 
+            fontWeight: 500,
+            lineHeight: 1.4,
+        },
+        h6: {
+            fontSize: '1.25rem', 
+            fontWeight: 500,
+            lineHeight: 1.5,
+        },
+        subtitle1: {
+            fontSize: '1.125rem', 
+            fontWeight: 400,
+            lineHeight: 1.5,
         },
         body1: {
-            fontSize: '1.1rem',
-            lineHeight: 1.8,
+            fontSize: '1.125rem', 
+            lineHeight: 1.6,
+        },
+        body2: {
+            fontSize: '1rem', 
+            lineHeight: 1.6,
+        },
+        button: {
+            fontSize: '1.125rem', 
+            fontWeight: 500,
+            textTransform: 'none',
         },
     },
     components: {
-        MuiAppBar: {
+        MuiButton: {
             styleOverrides: {
                 root: {
-                    backgroundColor: '#3d9970',
-                    boxShadow: 'none',
-                    padding: '8px 0',
-                    zIndex: 1200,
-
+                    fontSize: '1.125rem', 
+                    padding: '12px 24px',
+                    fontWeight: 500,
                 },
             },
         },
-        MuiToolbar: {
+        MuiTextField: {
             styleOverrides: {
                 root: {
-                    minHeight: '80px',
+                    '& .MuiInputBase-root': {
+                        fontSize: '1.125rem', 
+                    },
+                    '& .MuiInputLabel-root': {
+                        fontSize: '1.125rem', 
+                    },
+                    '& .MuiInputLabel-outlined': {
+                        transform: 'translate(14px, 18px) scale(1)', 
+                    },
+                    '& .MuiInputLabel-outlined.MuiInputLabel-shrink': {
+                        transform: 'translate(14px, -6px) scale(0.75)',
+                    },
+                },
+            },
+        },
+        MuiInputBase: {
+            styleOverrides: {
+                input: {
+                    fontSize: '1.125rem', 
                 },
             },
         },
