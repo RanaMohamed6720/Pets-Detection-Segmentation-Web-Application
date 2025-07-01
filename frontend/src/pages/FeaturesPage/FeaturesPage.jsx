@@ -77,7 +77,7 @@ const FeaturesPage = () => {
               maxWidth: "600px",
               mx: "auto",
               lineHeight: 1.6,
-              fontSize: { xs: "1.1rem", md: "1.25rem" },
+              fontSize: { xs: "1.3rem", md: "1.5rem" },
             }}
           >
             Discover the Innovative Features of PetDetect: AI-Powered Pet
@@ -157,7 +157,7 @@ const FeaturesPage = () => {
                       fontWeight: 600,
                       color: "#3d9970",
                       mb: 2,
-                      fontSize: "1.4rem",
+                      fontSize: "1.8rem",
                     }}
                   >
                     {feature.title}
@@ -167,7 +167,7 @@ const FeaturesPage = () => {
                     sx={{
                       color: "text.secondary",
                       lineHeight: 1.7,
-                      fontSize: "1rem",
+                      fontSize: "1.3rem",
                       flexGrow: 1,
                     }}
                   >
