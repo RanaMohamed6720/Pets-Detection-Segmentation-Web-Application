@@ -1,6 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
-import { AppBar, Toolbar, Button, Box } from "@mui/material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AppBar, Toolbar, Button, Box, Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useAuth } from "../contexts/AuthContext";
 import logo from "../assets/logo.png";
 
 const StyledAppBar = styled(AppBar)({
@@ -37,6 +38,13 @@ const LogoContainer = styled(Box)({
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <StyledAppBar position="static">
@@ -53,7 +61,7 @@ export default function Navbar() {
           />
         </LogoContainer>
 
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <NavButton
             color="inherit"
             component={Link}
@@ -78,14 +86,28 @@ export default function Navbar() {
           >
             About
           </NavButton>
-          <NavButton
-            color="inherit"
-            component={Link}
-            to="/auth"
-            active={location.pathname === "/auth"}
-          >
-            Login
-          </NavButton>
+
+          {user ? (
+            <>
+              <Avatar
+                sx={{ bgcolor: "white", color: "#3d9970", margin: "0 10px" }}
+              >
+                {user.email.charAt(0).toUpperCase()}
+              </Avatar>
+              <NavButton color="inherit" onClick={handleLogout}>
+                Logout
+              </NavButton>
+            </>
+          ) : (
+            <NavButton
+              color="inherit"
+              component={Link}
+              to="/auth"
+              active={location.pathname === "/auth"}
+            >
+              Login
+            </NavButton>
+          )}
         </Box>
       </StyledToolbar>
     </StyledAppBar>
