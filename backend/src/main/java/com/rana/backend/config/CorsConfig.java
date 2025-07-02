@@ -13,16 +13,21 @@ public class CorsConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedHeader("*");
 
-        // allow all methods get post etc
-        config.addAllowedMethod("*");
+        // allow both local development and production domains
+        config.addAllowedOrigin("http://localhost:3000"); // local frontend
+        config.addAllowedOrigin("https://RanaMohamed6720.github.io"); // GitHub Pages
+        config.addAllowedOrigin("https://pets-detection-segmentation-web-application-production.up.railway.app"); 
+
+        config.addAllowedHeader("Authorization");
+        config.addAllowedHeader("Content-Type");
+        config.addAllowedMethod("GET");
+        config.addAllowedMethod("POST");
+        config.addAllowedMethod("PUT");
+        config.addAllowedMethod("DELETE");
         config.setAllowCredentials(true);
 
-        // apply this configuration to all paths
         source.registerCorsConfiguration("/**", config);
-
         return new CorsFilter(source);
     }
 }

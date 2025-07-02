@@ -190,14 +190,16 @@ export default function AnalyzePage() {
       const formData = new FormData();
       formData.append("image", image);
 
-      const response = await fetch("http://localhost:8080/api/pets/analyze", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
+      const response = await fetch(
+        "https://pets-detection-segmentation-web-application-production.up.railway.app/api/pets/analyze",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `Server error (${response.status})`);
