@@ -30,6 +30,39 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+	<!--file upload support -->
+    <dependency>
+        <groupId>commons-fileupload</groupId>
+        <artifactId>commons-fileupload</artifactId>
+        <version>1.5</version>
+    </dependency>
+
+    <!-- python integration -->
+    <dependency>
+        <groupId>org.python</groupId>
+        <artifactId>jython-standalone</artifactId>
+        <version>2.7.3</version>
+    </dependency>
+
+    <!-- process builder -->
+    <dependency>
+        <groupId>org.zeroturnaround</groupId>
+        <artifactId>zt-exec</artifactId>
+        <version>1.12</version>
+    </dependency>
+
+    <!-- JSON Processing -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
+
+    <!-- For image processing -->
+    <dependency>
+        <groupId>org.imgscalr</groupId>
+        <artifactId>imgscalr-lib</artifactId>
+        <version>4.2</version>
+    </dependency>
 		<!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
 	<dependency>
 		<groupId>javax.validation</groupId>

@@ -15,10 +15,12 @@ const StyledToolbar = styled(Toolbar)({
   minHeight: "80px",
 });
 
-const NavButton = styled(Button)(({ theme, active }) => ({
-  fontWeight: active ? "bold" : "medium",
+const NavButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "$active",
+})(({ $active }) => ({
+  fontWeight: $active ? "bold" : "medium",
   fontSize: "1.25rem",
-  backgroundColor: active ? "rgba(255,255,255,0.15)" : "transparent",
+  backgroundColor: $active ? "rgba(255,255,255,0.15)" : "transparent",
   "&:hover": {
     backgroundColor: "rgba(255,255,255,0.1)",
     transform: "translateY(-2px)",
@@ -66,7 +68,7 @@ export default function Navbar() {
             color="inherit"
             component={Link}
             to="/analyze"
-            active={location.pathname === "/analyze"}
+            $active={location.pathname === "/analyze"}
           >
             Analyze
           </NavButton>
@@ -74,7 +76,7 @@ export default function Navbar() {
             color="inherit"
             component={Link}
             to="/features"
-            active={location.pathname === "/features"}
+            $active={location.pathname === "/features"}
           >
             Features
           </NavButton>
@@ -82,7 +84,7 @@ export default function Navbar() {
             color="inherit"
             component={Link}
             to="/about"
-            active={location.pathname === "/about"}
+            $active={location.pathname === "/about"}
           >
             About
           </NavButton>
@@ -103,7 +105,7 @@ export default function Navbar() {
               color="inherit"
               component={Link}
               to="/auth"
-              active={location.pathname === "/auth"}
+              $active={location.pathname === "/auth"}
             >
               Login
             </NavButton>
