@@ -209,13 +209,6 @@ const LoginForm = ({ onSwitchToSignup, onSubmit }) => {
                 ),
               }}
             />
-
-            <Box sx={{ textAlign: "right", mt: 1 }}>
-              <Link href="#" variant="body2" underline="hover">
-                Forgot password?
-              </Link>
-            </Box>
-
             {errors.submit && (
               <Fade in={!!errors.submit}>
                 <Typography

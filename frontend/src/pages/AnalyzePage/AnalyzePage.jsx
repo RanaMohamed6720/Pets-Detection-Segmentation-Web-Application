@@ -191,7 +191,7 @@ export default function AnalyzePage() {
       formData.append("image", image);
 
       const response = await fetch(
-        "https://pets-detection-segmentation-web-application-production.up.railway.app/api/pets/analyze",
+        "http://pets-detection-segmentation-web-application-production.up.railway.app/api/pets/analyze",
         {
           method: "POST",
           body: formData,
