@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useEffect,useState, useRef, useCallback } from "react";
 import {
   Box,
   Button,
@@ -40,7 +40,7 @@ const VisuallyHiddenInput = styled("input")({
 
 const PreviewImage = styled("img")({
   maxWidth: "100%",
-  maxHeight: "400px",
+  maxHeight: "300px",
   display: "block",
   margin: "auto",
   borderRadius: "8px",
@@ -50,8 +50,8 @@ const PreviewImage = styled("img")({
 const VisualizationContainer = styled("div")({
   position: "relative",
   maxWidth: "100%",
-  maxHeight: "500px",
-  margin: "20px auto",
+  maxHeight: "300px",
+  margin: "10px auto",
   borderRadius: "8px",
   boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
   border: "1px solid #ddd",
@@ -62,7 +62,7 @@ const VisualizationContainer = styled("div")({
 
 const VisualizationImage = styled("img")({
   maxWidth: "100%",
-  maxHeight: "500px",
+  maxHeight: "300px",
   display: "block",
   borderRadius: "8px",
   border: "3px solid #3d9970",
@@ -99,7 +99,13 @@ export default function AnalyzePage() {
   const [activeTab, setActiveTab] = useState("original");
   const [isDragActive, setIsDragActive] = useState(false);
   const fileInputRef = useRef(null);
+  const resultsRef = useRef(null);
 
+  useEffect(() => {
+    if (resultsRef.current && results) {
+      resultsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [results]);
   const resetAnalysis = () => {
     setResults(null);
     setError(null);
@@ -291,7 +297,7 @@ export default function AnalyzePage() {
                 }}
                 aria-label="download original image"
               >
-                <DownloadIcon fontSize="large" color="primary" />
+                <DownloadIcon fontSize="medium" color="primary" />
               </IconButton>
             </Box>
           );
@@ -491,6 +497,7 @@ export default function AnalyzePage() {
 
     return (
       <>
+        
         <Divider sx={{ my: 4 }} />
 
         <Typography variant="h2" gutterBottom sx={{ mb: 2 }}>
@@ -610,7 +617,7 @@ export default function AnalyzePage() {
                       color="text.secondary"
                       sx={{ mt: 1 }}
                     >
-                      Supports JPEG, PNG 
+                      Supports JPEG, PNG
                     </Typography>
                   </DropZone>
 
@@ -700,7 +707,9 @@ export default function AnalyzePage() {
             </Box>
           </Paper>
 
-          {renderResultsSection()}
+          <Box ref={resultsRef} sx={{ mt: 6 }}>
+            {renderResultsSection()}
+          </Box>
         </Container>
       </Box>
     </ThemeProvider>

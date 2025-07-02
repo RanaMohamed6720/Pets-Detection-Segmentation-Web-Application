@@ -16,55 +16,55 @@ const theme = createTheme({
     },
     typography: {
         fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-        fontSize: 18, 
+        fontSize: 16,
         h1: {
-            fontSize: '2.5rem',
+            fontSize: '2.25rem',
             fontWeight: 700,
             lineHeight: 1.2,
             color: '#3d9970',
         },
         h2: {
-            fontSize: '2rem',
-            fontWeight: 600,
-            lineHeight: 1.3,
-            color: '#3d9970',
-        },
-        h3: {
             fontSize: '1.75rem',
             fontWeight: 600,
             lineHeight: 1.3,
             color: '#3d9970',
         },
-        h4: {
+        h3: {
             fontSize: '1.5rem',
+            fontWeight: 600,
+            lineHeight: 1.3,
+            color: '#3d9970',
+        },
+        h4: {
+            fontSize: '1.375rem',
             fontWeight: 500,
             lineHeight: 1.4,
         },
         h5: {
-            fontSize: '1.375rem', 
+            fontSize: '1.25rem',
             fontWeight: 500,
             lineHeight: 1.4,
         },
         h6: {
-            fontSize: '1.25rem', 
+            fontSize: '1.125rem',
             fontWeight: 500,
             lineHeight: 1.5,
         },
         subtitle1: {
-            fontSize: '1.125rem', 
+            fontSize: '1rem',
             fontWeight: 400,
             lineHeight: 1.5,
         },
         body1: {
-            fontSize: '1.125rem', 
+            fontSize: '1rem',
             lineHeight: 1.6,
         },
         body2: {
-            fontSize: '1rem', 
+            fontSize: '0.875rem',
             lineHeight: 1.6,
         },
         button: {
-            fontSize: '1.125rem', 
+            fontSize: '1rem',
             fontWeight: 500,
             textTransform: 'none',
         },
@@ -73,8 +73,8 @@ const theme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    fontSize: '1.125rem', 
-                    padding: '12px 24px',
+                    fontSize: '1rem',
+                    padding: '10px 20px',
                     fontWeight: 500,
                 },
             },
@@ -83,13 +83,13 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     '& .MuiInputBase-root': {
-                        fontSize: '1.125rem', 
+                        fontSize: '1rem',
                     },
                     '& .MuiInputLabel-root': {
-                        fontSize: '1.125rem', 
+                        fontSize: '1rem',
                     },
                     '& .MuiInputLabel-outlined': {
-                        transform: 'translate(14px, 18px) scale(1)', 
+                        transform: 'translate(14px, 18px) scale(1)',
                     },
                     '& .MuiInputLabel-outlined.MuiInputLabel-shrink': {
                         transform: 'translate(14px, -6px) scale(0.75)',
@@ -100,7 +100,7 @@ const theme = createTheme({
         MuiInputBase: {
             styleOverrides: {
                 input: {
-                    fontSize: '1.125rem', 
+                    fontSize: '1rem',
                 },
             },
         },

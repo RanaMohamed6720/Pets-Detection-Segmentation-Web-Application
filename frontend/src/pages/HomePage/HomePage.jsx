@@ -9,50 +9,31 @@ const HomePage = () => {
   return (
     <Box
       sx={{
-        backgroundImage: `url(${dogImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        zIndex: 1,
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 80,
-          right: 0,
-          bottom: 0,
-          maxHeight: "calc(100vh - 80px)",
-          left: 0,
-          backgroundColor: "rgba(0,0,0,0.6)",
-        },
+        position: "relative",
+        minHeight: "100vh",
+        overflow: "hidden",
         pt: 10,
         pb: 12,
+        "&::before": {
+          content: '""',
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `url(${dogImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+          zIndex: -2,
+          filter: "brightness(0.4)",
+        },
       }}
     >
       <Container maxWidth="md">
-        {/* welcome title section */}
-        <Box
-          textAlign="center"
-          mb={10}
-          sx={{
-            position: "relative",
-            "&::before": {
-              content: '""',
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundImage: `url(${dogImage})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundAttachment: "fixed",
-              backgroundRepeat: "no-repeat",
-              zIndex: -1,
-            },
-          }}
-        >
+        {/* Welcome title section */}
+        <Box textAlign="center" mb={10}>
           <Box sx={{ display: "inline-block", position: "relative", mb: 4 }}>
-            {/* transparent text */}
             <Typography
               variant="h2"
               component="h1"
@@ -87,14 +68,18 @@ const HomePage = () => {
             mb={4}
             sx={{
               fontWeight: 400,
-              fontSize: "1.25rem",
-              textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+              fontSize: { xs: "1rem", sm: "1.25rem" },
+              textShadow: "0 2px 4px rgba(0,0,0,0.5)",
             }}
           >
             AI-powered pet detection
           </Typography>
 
-          <Stack direction="row" spacing={2} justifyContent="center">
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            justifyContent="center"
+          >
             <Button
               component={Link}
               to="/analyze"
@@ -102,12 +87,13 @@ const HomePage = () => {
               size="large"
               sx={{
                 bgcolor: "#3d9970",
-                fontSize: "1.1rem",
+                fontSize: { xs: "1rem", sm: "1.1rem" },
                 fontWeight: 600,
                 "&:hover": { bgcolor: "#2e7d5a" },
                 px: 4,
                 py: 1.5,
                 boxShadow: 4,
+                minWidth: { xs: "200px", sm: "auto" },
               }}
             >
               Start Analyzing
@@ -118,12 +104,13 @@ const HomePage = () => {
               variant="outlined"
               size="large"
               sx={{
-                fontSize: "1.1rem",
+                fontSize: { xs: "1rem", sm: "1.1rem" },
                 fontWeight: 600,
-                color: "#ffffff",
-                borderColor: "#ffffff",
+                color: "white",
+                borderColor: "white",
                 px: 4,
                 py: 1.5,
+                minWidth: { xs: "200px", sm: "auto" },
                 "&:hover": {
                   borderColor: "#ccc",
                   backgroundColor: "rgba(255,255,255,0.1)",
@@ -135,13 +122,13 @@ const HomePage = () => {
           </Stack>
         </Box>
 
-        {/* feature cards */}
+        {/* Feature cards */}
         <Box
           sx={{
             display: "grid",
             gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
             gap: 3,
-            mt: 8,
+            mt: 4,
           }}
         >
           {[
@@ -149,51 +136,57 @@ const HomePage = () => {
               title: "Detect Pets Automatically",
               description:
                 "Our AI scans your images and identifies cats or dogs instantly.",
-              icon: <PetsIcon sx={{ fontSize: 50, color: "#3d9970" }} />,
+              icon: <PetsIcon sx={{ fontSize: 40, color: "#3d9970" }} />,
             },
             {
               title: "Visualize Detection",
               description:
                 "See bounding boxes and segmentation masks highlighting each pet.",
               icon: (
-                <CropOriginalIcon sx={{ fontSize: 50, color: "#3d9970" }} />
+                <CropOriginalIcon sx={{ fontSize: 40, color: "#3d9970" }} />
               ),
             },
             {
               title: "No Pets?",
-              description: "If no pets are found, we’ll clearly inform.",
-              icon: <InfoIcon sx={{ fontSize: 50, color: "#3d9970" }} />,
+              description: "If no pets are found, we'll clearly inform you.",
+              icon: <InfoIcon sx={{ fontSize: 40, color: "#3d9970" }} />,
             },
           ].map((item, index) => (
             <Box
               key={index}
               sx={{
                 textAlign: "center",
-                p: 4,
-                borderRadius: 4,
-                background: "rgba(255, 255, 255, 0.25)",
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-                border: "1px solid rgba(255, 255, 255, 0.18)",
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                p: 3,
+                borderRadius: 3,
+                backgroundColor: "rgba(255, 255, 255, 0.85)",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                transition: "all 0.3s ease",
                 "&:hover": {
-                  transform: "translateY(-8px) scale(1.02)",
-                  boxShadow: "0 12px 36px rgba(0, 0, 0, 0.3)",
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 12px 28px rgba(0, 0, 0, 0.2)",
                 },
               }}
             >
-              <Box sx={{ mb: 2 }}>{item.icon}</Box>
+              <Box sx={{ mb: 1.5 }}>{item.icon}</Box>
               <Typography
                 variant="h6"
                 gutterBottom
-                sx={{ color: "#3d9970", fontWeight: 700, fontSize: "1.4rem" }}
+                sx={{
+                  color: "#3d9970",
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                }}
               >
                 {item.title}
               </Typography>
               <Typography
                 variant="body1"
-                sx={{ fontSize: "1.2rem", color: "rgba(0, 0, 0, 0.7)" }}
+                sx={{
+                  color: "text.secondary",
+                  fontSize: "0.9rem",
+                }}
               >
                 {item.description}
               </Typography>
