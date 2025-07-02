@@ -1,0 +1,32 @@
+{"properties": [
+  {
+    "name": "app.jwt-secret",
+    "type": "java.lang.String",
+    "description": "Secret key for JWT token generation"
+  },
+  {
+    "name": "app.jwt-expiration-ms",
+    "type": "java.lang.Long",
+    "description": "JWT token expiration time in milliseconds"
+  },
+  {
+    "name": "model.yolo",
+    "type": "java.lang.String",
+    "description": "A description for 'model.yolo'"
+  },
+  {
+    "name": "python.script",
+    "type": "java.lang.String",
+    "description": "A description for 'python.script'"
+  },
+  {
+    "name": "python.path",
+    "type": "java.lang.String",
+    "description": "A description for 'python.path'"
+  },
+  {
+    "name": "python.timeout",
+    "type": "java.lang.String",
+    "description": "A description for 'python.timeout'"
+  }
+]}
