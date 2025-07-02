@@ -50,4 +50,9 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+    
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return ResponseEntity.ok("backend is working");
+    }
 }
