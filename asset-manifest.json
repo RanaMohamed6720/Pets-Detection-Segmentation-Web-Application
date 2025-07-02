@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/Pets-Detection-Segmentation-Web-Application/static/css/main.e6c13ad2.css",
+    "main.js": "/Pets-Detection-Segmentation-Web-Application/static/js/main.95900756.js",
+    "static/media/dog.jpg": "/Pets-Detection-Segmentation-Web-Application/static/media/dog.a4edd521bf6ca3e96270.jpg",
+    "static/media/cat2.png": "/Pets-Detection-Segmentation-Web-Application/static/media/cat2.2b1fdab2834792c5f3ec.png",
+    "static/media/classification.png": "/Pets-Detection-Segmentation-Web-Application/static/media/classification.9ba2e1e3949fc761d175.png",
+    "static/media/detection.png": "/Pets-Detection-Segmentation-Web-Application/static/media/detection.df66724d36706a32c386.png",
+    "static/media/logo2.png": "/Pets-Detection-Segmentation-Web-Application/static/media/logo2.daab3cb70c6cb63c8141.png",
+    "static/media/segmentation.png": "/Pets-Detection-Segmentation-Web-Application/static/media/segmentation.8aca6cffd1f030a3c91a.png",
+    "static/media/logo.png": "/Pets-Detection-Segmentation-Web-Application/static/media/logo.3c76b62c58069732871b.png",
+    "index.html": "/Pets-Detection-Segmentation-Web-Application/index.html",
+    "main.e6c13ad2.css.map": "/Pets-Detection-Segmentation-Web-Application/static/css/main.e6c13ad2.css.map",
+    "main.95900756.js.map": "/Pets-Detection-Segmentation-Web-Application/static/js/main.95900756.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.95900756.js"
+  ]
+}
