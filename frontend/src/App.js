@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { AuthProvider } from './contexts/AuthContext';
 import theme from './theme';
@@ -13,10 +13,11 @@ import ProtectedRoute from './routes/ProtectedRoute';
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
+      <HashRouter>  {/* Changed from BrowserRouter */}
         <AuthProvider>
           <Navbar />
           <Routes>
+            <Route path="/" element={<HomePage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/features" element={<FeaturesPage />} />
@@ -28,7 +29,7 @@ function App() {
             } />
           </Routes>
         </AuthProvider>
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   );
 }
