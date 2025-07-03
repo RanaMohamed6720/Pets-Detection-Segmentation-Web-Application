@@ -21,16 +21,20 @@ def load_models():
     try:
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
         cls_model = resnet50(weights="IMAGENET1K_V1").to(device).eval()
-        det_model = YOLO("yolov5su.pt").to(device)
+        det_model = YOLO("yolov5n.pt").to(device)
         seg_model = deeplabv3_resnet50(weights="DEFAULT").to(device).eval()
 
+        # Download ImageNet labels
+        imagenet_labels = []
         try:
-            imagenet_labels = requests.get(
+            response = requests.get(
                 "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt",
                 timeout=10
-            ).text.splitlines()
+            )
+            if response.status_code == 200:
+                imagenet_labels = response.text.splitlines()
         except requests.exceptions.RequestException:
-            imagenet_labels = []
+            imagenet_labels = [f"class_{i}" for i in range(1000)]
 
         segmentation_labels = [
             'background', 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
@@ -56,58 +60,32 @@ def load_models():
 
 def image_to_base64(img):
     buf = BytesIO()
-    try:
-        img.save(buf, format="PNG")
-        return base64.b64encode(buf.getvalue()).decode("utf-8")
-    except Exception:
-        return ""
-    finally:
-        buf.close()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
 
 def analyze_image(image_path, models):
     try:
-        # 1. Validate and load image
-        try:
-            with Image.open(image_path) as img:
-                img.verify()
-            img = Image.open(image_path).convert("RGB")
-        except Exception as e:
-            return {
-                "success": False,
-                "error": f"Invalid image file: {str(e)}"
-            }
+        with Image.open(image_path) as img:
+            img.verify()
+        img = Image.open(image_path).convert("RGB")
 
-        # 2. Smart resizing for large images
-        max_pixels = 10_000_000  # 10MP limit
         original_width, original_height = img.size
-        
+        max_pixels = 10_000_000
         if original_width * original_height > max_pixels:
             ratio = (max_pixels / (original_width * original_height)) ** 0.5
-            new_width = int(original_width * ratio)
-            new_height = int(original_height * ratio)
-            img = img.resize((new_width, new_height), Image.LANCZOS)
-            
+            img = img.resize((int(original_width * ratio), int(original_height * ratio)), Image.LANCZOS)
+
         img_width, img_height = img.size
+        seg_img = img.resize((512, 512), Image.LANCZOS) if max(img_width, img_height) > 512 else img
 
-        max_seg_size = 512
-        if max(img_width, img_height) > max_seg_size:
-            scale = max_seg_size / max(img_width, img_height)
-            seg_width = int(img_width * scale)
-            seg_height = int(img_height * scale)
-            seg_img = img.resize((seg_width, seg_height), Image.LANCZOS)
-        else:
-            seg_img = img
-            seg_width, seg_height = img_width, img_height
-
-        # 3. Classification
-        transform = T.Compose([T.Resize((224, 224)), T.ToTensor()])
-        input_cls = transform(img).unsqueeze(0).to(models["device"])
+        # Classification
+        input_cls = T.Compose([T.Resize((224, 224)), T.ToTensor()])(img).unsqueeze(0).to(models["device"])
         with torch.no_grad():
             out_cls = models["cls_model"](input_cls)
         cls_id = out_cls.argmax().item()
         cls_name = models["imagenet_labels"][cls_id] if cls_id < len(models["imagenet_labels"]) else "unknown"
 
-        # 4. Detection
+        # Detection
         det_results = models["det_model"](img)[0]
         det_img = img.copy()
         draw = ImageDraw.Draw(det_img)
@@ -130,45 +108,31 @@ def analyze_image(image_path, models):
                 draw.rectangle([x1, y1, x2, y2], outline="lime", width=5)
                 draw.text((x1, y1 - 15), f"{label} {conf:.2f}", fill="lime")
 
-        # 5. Segmentation (only if pets detected)
-        segmentation_img_str = ""
-        detection_img_str = ""
-        input_seg = None  
+        detection_img_str = image_to_base64(det_img) if pet_detected else None
+        segmentation_img_str = None
 
         if pet_detected:
-            # generate detection image
-            detection_img_str = image_to_base64(det_img)
-
-            # generate segmentation
-            seg_transform = T.Compose([
+            input_seg = T.Compose([
                 T.ToTensor(),
                 T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-            ])
-            input_seg = seg_transform(seg_img).unsqueeze(0).to(models["device"])
+            ])(seg_img).unsqueeze(0).to(models["device"])
             with torch.no_grad():
                 seg_output = models["seg_model"](input_seg)["out"]
             seg_mask = torch.argmax(seg_output.squeeze(0), dim=0).cpu().numpy()
-            seg_mask = Image.fromarray(seg_mask.astype(np.uint8))
-            seg_mask = seg_mask.resize((img_width, img_height), Image.NEAREST)
-            seg_mask = np.array(seg_mask)
+            seg_mask = Image.fromarray(seg_mask.astype(np.uint8)).resize((img_width, img_height), Image.NEAREST)
 
-            # segmentation visualization
             seg_vis = Image.new("RGB", img.size, (128, 0, 128))
             yellow = (255, 255, 0)
-            seg_mask_np = np.array(seg_mask)
-
-            for class_id in [8, 12]:  # cats and dogs
-                binary_mask = (seg_mask_np == class_id).astype(np.uint8) * 255
+            for class_id in [8, 12]:  # cat, dog
+                mask = (np.array(seg_mask) == class_id).astype(np.uint8) * 255
                 yellow_layer = Image.new("RGB", img.size, yellow)
-                seg_vis.paste(yellow_layer, (0, 0), Image.fromarray(binary_mask).convert("L"))
+                seg_vis.paste(yellow_layer, (0, 0), Image.fromarray(mask).convert("L"))
 
             segmentation_img_str = image_to_base64(seg_vis)
 
-        to_delete = [input_cls, out_cls]
-        if input_seg is not None:
-            to_delete.extend([input_seg, seg_output, seg_mask])
-            
-        del to_delete
+        del input_cls, out_cls
+        if pet_detected:
+            del input_seg, seg_output
         torch.cuda.empty_cache() if models["device"] == "cuda" else None
         gc.collect()
 
@@ -177,20 +141,21 @@ def analyze_image(image_path, models):
             "classification": cls_name,
             "detections": detections,
             "visualizations": {
-                "detection": detection_img_str if pet_detected else None,
-                "segmentation": segmentation_img_str if pet_detected else None
+                "detection": detection_img_str,
+                "segmentation": segmentation_img_str
             },
             "metadata": {
                 "device": models["device"],
                 "torch_version": torch.__version__,
                 "classification_model": "resnet50",
-                "detection_model": "yolov5su",
+                "detection_model": "yolov5n",
                 "segmentation_model": "deeplabv3",
                 "image_width": original_width,
                 "image_height": original_height,
                 "pets_detected": pet_detected
             }
         }
+
     except Exception as e:
         return {
             "success": False,
