@@ -1,12 +1,16 @@
 [phases.setup]
 nixPkgs = ["openjdk17", "python311", "python311Packages.pip"]
 
+[phases.install]
+cmds = [
+  "pip install --break-system-packages -r src/main/resources/python/requirements.txt"
+]
+
 [phases.build]
 cmds = [
   "chmod +x ./mvnw",
   "./mvnw -B -DskipTests clean install"
 ]
-pythonRequirements = "src/main/resources/python/requirements.txt"
 
 [start]
 cmd = "java -jar target/backend-0.0.1-SNAPSHOT.jar"
