@@ -6,17 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
 import java.util.concurrent.TimeUnit;
-
 
 @Service
 public class PythonService {
@@ -33,34 +25,37 @@ public class PythonService {
 
     public String analyzeImage(MultipartFile image) throws IOException {
         Path tempImage = null;
+        String tempScriptPath = null;
+
         try {
             // 1. Create temp file with validation
             tempImage = createTempImageFile(image);
             logger.info("Temporary image created at: {}", tempImage);
 
             // 2. Get absolute script path with validation
-            String scriptPath = getValidatedScriptPath();
+            tempScriptPath = extractScriptToTempFile();
+            logger.info("Python script extracted to: {}", tempScriptPath);
 
             // 3. Build and execute process
-            ProcessBuilder pb = buildProcess(scriptPath, tempImage);
+            ProcessBuilder pb = buildProcess(tempScriptPath, tempImage);
             logger.info("Process command: {}", pb.command());
 
-            // 4. Execute with full error capture
             Process process = pb.start();
             ProcessResult result = captureProcessOutput(process);
 
             if (result.exitCode != 0) {
-                throw new RuntimeException(String.format(
-                        "Python script failed with exit code %d. Output: %s",
-                        result.exitCode, result.output));
+                throw new RuntimeException(
+                        "Python script failed (exit code " + result.exitCode + "):\n" + result.output);
             }
 
             return result.output;
+
         } catch (Exception e) {
-            logger.error("Processing failed: {}", e.getMessage());
+            logger.error("Processing failed: {}", e.getMessage(), e);
             throw new IOException("Image processing failed: " + e.getMessage(), e);
         } finally {
             cleanupTempFile(tempImage);
+            cleanupTempFile(tempScriptPath == null ? null : Paths.get(tempScriptPath));
         }
     }
 
@@ -79,30 +74,20 @@ public class PythonService {
         }
     }
 
-    private String getValidatedScriptPath() throws IOException {
-        try {
-            URL resource = getClass().getResource("/python/" + pythonScript);
-            if (resource == null) {
-                throw new FileNotFoundException(
-                        "Python script not found in resources: " + pythonScript);
-            }
+    private String extractScriptToTempFile() throws IOException {
+        String scriptName = pythonScript;
+        Path tempScript = Files.createTempFile("analyze-", ".py");
 
-            Path scriptPath = Paths.get(resource.toURI());
-            if (!Files.exists(scriptPath)) {
-                throw new FileNotFoundException(
-                        "Python script not found at: " + scriptPath);
+        try (InputStream in = getClass().getResourceAsStream("/python/" + scriptName)) {
+            if (in == null) {
+                throw new FileNotFoundException("Python script not found in resources: " + scriptName);
             }
-
-            // Verify execute permission
-            if (!Files.isReadable(scriptPath)) {
-                throw new SecurityException(
-                        "No read permission for script: " + scriptPath);
-            }
-
-            return scriptPath.toAbsolutePath().toString();
-        } catch (URISyntaxException e) {
-            throw new IOException("Invalid script path URI", e);
+            Files.copy(in, tempScript, StandardCopyOption.REPLACE_EXISTING);
         }
+
+        // Set executable (for Linux, safe on Windows too)
+        tempScript.toFile().setExecutable(true);
+        return tempScript.toAbsolutePath().toString();
     }
 
     private ProcessBuilder buildProcess(String scriptPath, Path imagePath) {
@@ -116,10 +101,10 @@ public class PythonService {
 
     private ProcessResult captureProcessOutput(Process process)
             throws InterruptedException, IOException {
+
         StringBuilder output = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream()))) {
-
             String line;
             while ((line = reader.readLine()) != null) {
                 output.append(line).append("\n");
@@ -130,22 +115,19 @@ public class PythonService {
         boolean completed = process.waitFor(timeoutSeconds, TimeUnit.SECONDS);
         if (!completed) {
             process.destroyForcibly();
-            throw new RuntimeException(
-                    "Process timed out after " + timeoutSeconds + " seconds");
+            throw new RuntimeException("Python script timed out after " + timeoutSeconds + " seconds");
         }
 
-        return new ProcessResult(
-                process.exitValue(),
-                output.toString());
+        return new ProcessResult(process.exitValue(), output.toString());
     }
 
-    private void cleanupTempFile(Path tempFile) {
-        if (tempFile != null) {
+    private void cleanupTempFile(Path file) {
+        if (file != null) {
             try {
-                Files.deleteIfExists(tempFile);
-                logger.info("Cleaned up temp file: {}", tempFile);
+                Files.deleteIfExists(file);
+                logger.info("Cleaned up temp file: {}", file);
             } catch (IOException e) {
-                logger.warn("Failed to delete temp file: {}", tempFile, e);
+                logger.warn("Failed to delete temp file: {}", file, e);
             }
         }
     }
