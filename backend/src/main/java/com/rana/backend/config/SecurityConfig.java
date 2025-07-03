@@ -2,6 +2,7 @@ package com.rana.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -55,7 +56,7 @@ public class SecurityConfig {
     public JwtAuthFilter jwtAuthFilter() {
         return new JwtAuthFilter(jwtUtils, userDetailsService);
     }
-   
+
     // core security configuration method that defines all security rules   
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -68,14 +69,15 @@ public class SecurityConfig {
                 // Set a custom handler for unauthorized access (no/invalid JWT)
                 .exceptionHandling(handling -> handling
                         .authenticationEntryPoint(jwtAuthEntryPoint)) // sends 401 response if token is invalid or
-                                                                      // missing
+                // missing
 
                 // tells Spring not to use HTTP sessions at all (we use JWTs instead)
                 .sessionManagement(management -> management
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
+                        
                 // sets which URLs are public and which require login
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll() // allow public access to login/register endpoints
                         .anyRequest().authenticated()) // all other requests require valid JWT token
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -87,16 +89,24 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
+                // changing to lowercase because gh-pages are case-insensitive and get converted to lowercase
+                "https://ranamohamed6720.github.io",
                 "http://localhost:3000",
-                "https://RanaMohamed6720.github.io",
                 "https://pets-detection-segmentation-web-application-production.up.railway.app"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // expanded methods methods and headers
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin",
+                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+        configuration.setExposedHeaders(Arrays.asList(
+                "Authorization", "Content-Disposition", "Access-Control-Allow-Origin",
+                "Access-Control-Allow-Credentials"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    
 }
