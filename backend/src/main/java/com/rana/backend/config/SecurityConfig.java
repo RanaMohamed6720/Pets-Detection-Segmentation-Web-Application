@@ -77,7 +77,6 @@ public class SecurityConfig {
                 // sets which URLs are public and which require login
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // allow public access to login/register endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()) // all other requests require valid JWT token
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
