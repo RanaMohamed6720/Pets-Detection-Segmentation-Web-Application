@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://pets-detection-segmentation-web-application-production.up.railway.app',
+    baseURL: 'https://pets-detection-segmentation-web-application-production.up.railway.app',
 });
 
 // authentication apis
