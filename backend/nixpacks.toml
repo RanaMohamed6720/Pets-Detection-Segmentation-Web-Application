@@ -2,9 +2,7 @@
 nixPkgs = ["python311", "python311Packages.pip"]
 
 [phases.build]
-cmds = [
-  "pip install -r src/main/resources/python/requirements.txt"
-]
+pythonRequirements = "src/main/resources/python/requirements.txt"
 
 [start]
 cmd = "java -jar target/backend-0.0.1-SNAPSHOT.jar"
