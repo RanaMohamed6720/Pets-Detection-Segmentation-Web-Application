@@ -4,7 +4,7 @@ import traceback
 import torch
 import torchvision.transforms as T
 from torchvision.models import resnet50
-from torchvision.models.segmentation import deeplabv3_resnet50
+from torchvision.models.segmentation import lraspp_mobilenet_v3_large  
 from PIL import Image, ImageDraw
 import numpy as np
 from ultralytics import YOLO
@@ -14,28 +14,28 @@ import requests
 import gc
 from ultralytics.utils import LOGGER
 
+# force cpu usage
+torch.backends.cudnn.enabled = False
+DEVICE = torch.device('cpu')
+
 # muting YOLO logs
 LOGGER.setLevel("ERROR")
 
 def load_models():
     try:
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        cls_model = resnet50(weights="IMAGENET1K_V1").to(device).eval()
-        det_model = YOLO("yolov5n.pt").to(device)
-        seg_model = deeplabv3_resnet50(weights="DEFAULT").to(device).eval()
+        cls_model = resnet50(weights="IMAGENET1K_V1").to(DEVICE).eval()
+        det_model = YOLO("yolov8n.pt").to(DEVICE)  # Smaller than yolov5n
+        seg_model = lraspp_mobilenet_v3_large(weights="DEFAULT").to(DEVICE).eval()
 
-        # Download ImageNet labels
-        imagenet_labels = []
-        try:
-            response = requests.get(
-                "https://raw.githubusercontent.com/pytorch/hub/master/imagenet_classes.txt",
-                timeout=10
-            )
-            if response.status_code == 200:
-                imagenet_labels = response.text.splitlines()
-        except requests.exceptions.RequestException:
-            imagenet_labels = [f"class_{i}" for i in range(1000)]
-
+        # quantize models to reduce size and improve CPU performance
+        cls_model = torch.quantization.quantize_dynamic(
+            cls_model, {torch.nn.Linear}, dtype=torch.qint8
+        )
+        seg_model = torch.quantization.quantize_dynamic(
+            seg_model, {torch.nn.Linear}, dtype=torch.qint8
+        )
+        imagenet_labels = [f"class_{i}" for i in range(1000)]
+        
         segmentation_labels = [
             'background', 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus',
             'car', 'cat', 'chair', 'cow', 'diningtable', 'dog', 'horse', 'motorbike',
@@ -49,7 +49,7 @@ def load_models():
             "seg_model": seg_model,
             "imagenet_labels": imagenet_labels,
             "segmentation_labels": segmentation_labels,
-            "device": device
+            "device": DEVICE
         }
     except Exception as e:
         return {
@@ -79,7 +79,7 @@ def analyze_image(image_path, models):
         seg_img = img.resize((512, 512), Image.LANCZOS) if max(img_width, img_height) > 512 else img
 
         # Classification
-        input_cls = T.Compose([T.Resize((224, 224)), T.ToTensor()])(img).unsqueeze(0).to(models["device"])
+        input_cls = T.Compose([T.Resize((224, 224)), T.ToTensor()])(img).unsqueeze(0).to(DEVICE)
         with torch.no_grad():
             out_cls = models["cls_model"](input_cls)
         cls_id = out_cls.argmax().item()
@@ -115,7 +115,7 @@ def analyze_image(image_path, models):
             input_seg = T.Compose([
                 T.ToTensor(),
                 T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-            ])(seg_img).unsqueeze(0).to(models["device"])
+            ])(seg_img).unsqueeze(0).to(DEVICE)
             with torch.no_grad():
                 seg_output = models["seg_model"](input_seg)["out"]
             seg_mask = torch.argmax(seg_output.squeeze(0), dim=0).cpu().numpy()
@@ -130,10 +130,10 @@ def analyze_image(image_path, models):
 
             segmentation_img_str = image_to_base64(seg_vis)
 
+        # memory cleanup
         del input_cls, out_cls
         if pet_detected:
             del input_seg, seg_output
-        torch.cuda.empty_cache() if models["device"] == "cuda" else None
         gc.collect()
 
         return {
@@ -145,11 +145,11 @@ def analyze_image(image_path, models):
                 "segmentation": segmentation_img_str
             },
             "metadata": {
-                "device": models["device"],
+                "device": "cpu",
                 "torch_version": torch.__version__,
-                "classification_model": "resnet50",
-                "detection_model": "yolov5n",
-                "segmentation_model": "deeplabv3",
+                "classification_model": "resnet50 (quantized)",
+                "detection_model": "yolov8n",
+                "segmentation_model": "lraspp_mobilenet_v3_large (quantized)",
                 "image_width": original_width,
                 "image_height": original_height,
                 "pets_detected": pet_detected
